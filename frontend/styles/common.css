@@ -1,0 +1,188 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "MuseoSansCyrl", sans-serif;
+    color: #333;
+}
+
+a {
+    color: #6933DC;
+}
+
+@font-face {
+    font-family: "MuseoSansCyrl";
+    src: url("../fonts/MuseoSansCyrl-500.ttf");
+}
+@font-face {
+    font-family: "MuseoSansCyrl-bold";
+    src: url("../fonts/MuseoSansCyrl700.ttf");
+}
+
+.header {
+    padding: 42px 0 40px;
+    border-bottom: 1px solid #DCDCF3;
+}
+
+.container  {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.btn {
+    color: #FFF;
+    font-size: 17px;
+    padding: 14px 35px;
+    border-radius: 6px;
+    background: #6933DC;
+    border: 0;
+    cursor: pointer;
+    transition: .4s;
+    text-decoration: none;
+}
+
+
+
+
+a.btn {
+    display: inline-block;
+}
+.btn:hover {
+    background: #28037c;
+}
+
+.btn:disabled {
+    background-color: #e2dfe7;
+    cursor: not-allowed;
+}
+
+
+.footer {
+    text-align: center;
+    padding: 40px 0;
+    color: #DCDCF3;
+    font-size: 13px;
+}
+.common-title {
+    font-family: "MuseoSansCyrl-bold", sans-serif;
+    font-size: 48px;
+}
+.common-title span,
+.common-question-title span {
+    color: #6933DC;
+}
+
+.common-pre-title {
+    color: #DCDCF3;
+    font-size: 20px;
+    position: relative;
+}
+.common-pre-title.color {
+    color: #6933DC;
+}
+
+.common-question-title {
+    font-family: "MuseoSansCyrl-bold", sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.common-question-options {
+    margin-top: 58px;
+    min-height: 344px;
+}
+
+.common-question-option {
+    font-size: 20px;
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.btn-transparent {
+    background: transparent;
+    color: #6933DC;
+    border-radius: 6px;
+    border: 1px solid #6933DC;
+}
+
+.btn-transparent:hover {
+    background: #6933DC;
+    color: #fff;
+
+}
+
+.btn-transparent:disabled {
+    background: transparent;
+    color: #e2dfe7;
+    border-radius: 6px;
+    border: 1px solid #e2dfe7;
+    cursor: not-allowed;
+}
+
+.big-title {
+    font-family: "MuseoSansCyrl-bold", sans-serif;
+    font-size: 54px;
+}
+
+.big-title span {
+    color: #6933DC;
+}
+
+
+.common-link-to-go {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.common-link-to-go a {
+    color: #6933DC;
+    text-align: right;
+    font-size: 17px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.common-link-to-go a:hover {
+    text-decoration: underline;
+}
+
+.common-link-to-go a img {
+    margin-left: 13px;
+}
+a.disabled {
+    color: #e2dfe7;
+    pointer-events: none;
+}
+
+.header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.profile-image {
+    margin-right: 5px;
+}
+
+.profile-info {
+    line-height: 0;
+}
+
+.profile-user {
+    font-size: 18px;
+    line-height: 18px;
+}
+
+.profile-logout {
+    font-size: 12px;
+    line-height: 12px;
+}
