@@ -1,7 +1,7 @@
 import {UrlManager} from "../utils/url-manager";
 import {CustomHttp} from "../services/custom-http";
-import config from "../../config/config";
-import {Auth} from "../services/auth";
+import config from "../../config/config.js";
+import {Auth} from "../services/auth.js";
 
 export class Result {
     constructor() {
@@ -9,7 +9,7 @@ export class Result {
 
         this.init();
 
-        document.getElementById('right-answers').onclick = this.goToRightAnswers
+        document.getElementById('right-answers').onclick = this.goToRightAnswers.bind(this)
     }
 
     async init () {
@@ -35,6 +35,8 @@ export class Result {
     }
 
     goToRightAnswers() {
-        location.href = '#/right-answers';
+        if (this.routeParams.id) {
+            location.href = '#/right-answers?id=' + this.routeParams.id;
+        }
     }
 }

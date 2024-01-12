@@ -18,7 +18,7 @@
     align-items: center;
 }
 .right-answers_pre-title_wrap .common-pre-title:first-child:after {
-    content: url("images/small-gray-arrow.png");
+    content: url("/images/small-gray-arrow.png");
     position: absolute;
     top: 0;
     right: -15px;
@@ -34,38 +34,25 @@
     font-weight: 700;
 }
 
-.right-answers-block-option {
-    position: relative;
-    margin-left: 33px;
-}
-.right-answers-block-option:before {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 3px solid #6933DC;
-    border-radius: 50%;
-    background: transparent;
-    left: -33px;
-    top: 50%;
-    transform: translateY(-50%);
-    box-sizing: border-box;
-}
-
-.right.right-answers-block-option {
+.right {
     color: #5FDC33;
 }
-.wrong.right-answers-block-option {
+.wrong {
     color: #DC3333;
 }
-.right.right-answers-block-option:before {
-    border: 6px solid #5FDC33;
 
+input[type="radio"].right:checked {
+    border: 3px solid #5FDC33;
+}
+input[type="radio"].right:checked::before {
+    box-shadow: inset 10px 10px #5FDC33;
 }
 
-.wrong.right-answers-block-option:before {
-    border: 6px solid #DC3333;
-
+input[type="radio"].wrong:checked {
+    border: 3px solid #DC3333;
+}
+input[type="radio"].wrong:checked::before {
+    box-shadow: inset 10px 10px #DC3333;
 }
 
 

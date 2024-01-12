@@ -1,91 +1,92 @@
-import {UserDataFromSessionStorage} from "../utils/userDataFromSessionStorage.js";
+import {UrlManager} from "../utils/url-manager.js";
+import {Auth} from "../services/auth.js";
+import {CustomHttp} from "../services/custom-http.js";
+import config from "../../config/config.js";
 
-export class RightAnswers  {
+export class RightAnswers {
     constructor() {
         this.userData = null;
-        this.rightAnswers = null;
         this.quiz = null;
-        this.userResult = null;
+        this.routeParams = UrlManager.getQueryParams();
+        this.userInfo =Auth.getUserInfo();
+        this.init();
+    }
 
-        this.userData = UserDataFromSessionStorage.checkUserData();
-        const testId = +sessionStorage.getItem('chooseQuizId');
-        this.userResult = JSON.parse(sessionStorage.getItem('userResult'));
-        if (testId) {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://testologia.site/get-quiz-right?id=' + testId, false);
-            xhr.send();
-
-            if (xhr.status === 200 && xhr.responseText) {
-                try {
-                    this.rightAnswers = JSON.parse(xhr.responseText);
-                } catch (e) {
-                    location.href = '#/';
-                }
-            } else {
-                location.href = '#/';
-            }
-
-            xhr.open('GET', 'https://testologia.site/get-quiz?id=' + testId, false);
-            xhr.send();
-            if (xhr.status === 200 && xhr.responseText) {
-                try {
-                    this.quiz = JSON.parse(xhr.responseText);
-                } catch (e) {
-                    location.href = '#/';
-                }
-                document.getElementById('right-answers-pre-title').innerText = `${this.quiz.name}`;
-                if (this.userData) {
-                    document.getElementById('author').innerHTML = `Тест выполнил <span>${this.userData.name} ${this.userData.lastName}, ${this.userData.email}</span>`
-                }
-                if (this.userResult) {
+    async init() {
+        if (!this.userInfo) {
+            location.href = '#/';
+        }
+        if (this.routeParams.id) {
+            try {
+                const result = await CustomHttp.request(config.host + '/tests/' + this.routeParams.id + '/result/details?userId=' + this.userInfo.userId)
+                if (result) {
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+                    this.quiz = result;
                     this.showAnswers();
-                } else {
-                    location.href = '#/';
                 }
-
-            } else {
-                location.href = '#/';
+            } catch (e) {
+                console.log(e)
             }
         }
     }
 
-        showAnswers () {
-            const answersElement = document.getElementById('answers');
+    showAnswers() {
+        const answersElement = document.getElementById('answers');
+        const rightAnswersPreTitleElement = document.getElementById('right-answers-pre-title');
+        rightAnswersPreTitleElement.innerText = this.quiz.test.name;
+        const rightAnswersAuthorElement = document.getElementById('author');
+        rightAnswersAuthorElement.innerHTML = `Тест выполнил <span>${this.userInfo.fullName}, ${this.userInfo.email}</span>`;
 
-            this.quiz.questions.forEach( (item, index) => {
-                const rightAnswersBlock = document.createElement('div');
-                rightAnswersBlock.className = 'right-answers-block';
+        this.quiz.test.questions.forEach((item, index) => {
+            const rightAnswersBlock = document.createElement('div');
+            rightAnswersBlock.className = 'right-answers-block';
 
-                const rightAnswersBlockTitle = document.createElement('div');
-                rightAnswersBlockTitle.className = 'common-question-title';
-                rightAnswersBlockTitle.classList.add('right-answers-block-title');
-                rightAnswersBlockTitle.innerHTML = `<span>Вопрос ${index + 1}:</span> ${item.question}`;
+            const rightAnswersBlockTitle = document.createElement('div');
+            rightAnswersBlockTitle.className = 'common-question-title';
+            rightAnswersBlockTitle.classList.add('right-answers-block-title');
+            rightAnswersBlockTitle.innerHTML = `<span>Вопрос ${item.id}:</span> ${item.question}`;
 
-                const rightAnswersBlockOptions = document.createElement('div');
-                rightAnswersBlockOptions.className = 'common-question-options';
-                rightAnswersBlockOptions.classList.add('right-answers-block-options');
+            const rightAnswersBlockOptions = document.createElement('div');
+            rightAnswersBlockOptions.className = 'common-question-options';
 
-                let rightAnswerNumber = this.rightAnswers.find( (itemAnswer, indexAnswer) => indexAnswer === index);
-                let userAnswerNumber = this.userResult.find( userAnswer => userAnswer.questionId === item.id);
+            item.answers.forEach(answer => {
+                const answerElement = document.createElement('div');
+                answerElement.className = 'common-question-option';
 
-                item.answers.forEach( answer => {
-                    const answerElement = document.createElement('div');
-                    answerElement.className = 'common-question-option';
-                    answerElement.classList.add('right-answers-block-option');
-                    if (userAnswerNumber && userAnswerNumber.chosenAnswerId === rightAnswerNumber && userAnswerNumber.chosenAnswerId === answer.id) {
-                        answerElement.classList.add('right');
-                    } else if (userAnswerNumber && userAnswerNumber.chosenAnswerId !== rightAnswerNumber && userAnswerNumber.chosenAnswerId === answer.id) {
-                        answerElement.classList.add('wrong');
+                const inputId = `answer-${answer.id}`;
+                const inputElement = document.createElement('input');
+                inputElement.className = 'option-answer';
+                inputElement.setAttribute('type', 'radio');
+                inputElement.setAttribute('id', inputId);
+                inputElement.setAttribute('readonly', 'readonly');
+                inputElement.setAttribute('disabled', 'disabled');
+
+                const labelElement = document.createElement('label');
+                labelElement.setAttribute('for', inputId);
+                labelElement.innerText = answer.answer;
+
+                if (answer.hasOwnProperty('correct')) {
+                    inputElement.setAttribute('checked', 'checked')
+                    if (answer.correct) {
+                        inputElement.classList.add('right');
+                        labelElement.classList.add('right');
+                    } else {
+                        inputElement.classList.add('wrong');
+                        labelElement.classList.add('wrong');
                     }
-                    answerElement.innerText = `${answer.answer}`;
-                    rightAnswersBlockOptions.appendChild(answerElement);
-                })
-                rightAnswersBlock.appendChild(rightAnswersBlockTitle);
-                rightAnswersBlock.appendChild(rightAnswersBlockOptions);
+                }
 
-                answersElement.appendChild(rightAnswersBlock);
+                answerElement.appendChild(inputElement);
+                answerElement.appendChild(labelElement);
+                rightAnswersBlockOptions.appendChild(answerElement);
             })
 
-        }
+            rightAnswersBlock.appendChild(rightAnswersBlockTitle);
+            rightAnswersBlock.appendChild(rightAnswersBlockOptions);
 
+            answersElement.appendChild(rightAnswersBlock);
+        })
     }
+}
